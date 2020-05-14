@@ -1,0 +1,71 @@
+from random import randrange as rnd
+ 
+ 
+class Human:
+    def __init__(self, name):
+        self._uin = rnd(100000, 999999) 
+        self.name = name  
+ 
+    def __repr__(self):
+        return f"{self.name}-{self.get_uin()}"
+ 
+    def get_uin(self):  
+        return self._uin
+ 
+ 
+class Hero(Human):
+    lvl_max = 80
+ 
+    def __init__(self, name, team_n, lvl=1):
+        super().__init__(name)
+        self.team = team_n 
+        if lvl > self.lvl_max:
+            lvl = self.lvl_max
+        if lvl <= 0:
+            lvl = 1
+        self.lvl = lvl
+ 
+    def __repr__(self):
+        return f"Герой: " + super().__repr__() + f" уровень={self.lvl}, команда={self.team}"
+ 
+    def lvl_up(self):
+        self.lvl += int(self.lvl < self.lvl_max)
+ 
+ 
+class Soldier(Human):
+    def __init__(self, name, team_n):
+        super().__init__(name)
+        self.team = team_n
+ 
+    def __repr__(self):
+        return "Солдат: " + super().__repr__()
+ 
+    def follow_hero(self, hero):
+        if isinstance(hero, Hero):
+            print(f"Я, солдат {self.name}, следую за героем {hero.name}!")
+        else:
+            print(f"Я, солдат {self.name}, не знаю такого героя.")
+ 
+ 
+human_name = ["John", "Peter", "Michael", "Jim", "Paul", "Alex"]
+team_name = ["красные", "синие"]
+sold_max = 9  
+team = dict()
+for i in team_name:  
+    team[i] = [Hero(human_name[rnd(len(human_name))], i), []]  
+    for j in range(rnd(1, sold_max+1)):
+        team[i][1].append(Soldier(human_name[rnd(len(human_name))], i))  
+team_winner_name = None  
+team_winner_len = 0  
+for i in team_name:  
+    x = len(team[i][1])
+    print(f"Команда {i} состоит из {x} солдат")
+    if x > team_winner_len:
+        team_winner_name = i
+        team_winner_len = x
+print(f"Команда победитель - {team_winner_name}")
+team[team_winner_name][0].lvl_up()  
+num_follow_sold = rnd(team_winner_len)
+team[team_winner_name][1][num_follow_sold].follow_hero(team[team_winner_name][0])
+print(team[team_winner_name][0])
+print(team[team_winner_name][1][num_follow_sold])
